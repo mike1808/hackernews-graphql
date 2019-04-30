@@ -1,0 +1,28 @@
+.Layout {
+    display: flex;
+    flex-flow: column nowrap;
+    min-height: 100vh;
+}
+
+.Layout header {
+    display: flex;
+    padding: 0.5rem 1rem;
+    background: var(--secondary-background-color);
+}
+
+.Layout main {
+    flex: 1;
+    background: var(--default-background-color);
+    padding: 1rem 0;
+}
+
+.content {
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.Layout footer {
+    line-height: 2rem;
+    background: var(--secondary-background-color);
+    text-align: center;
+}

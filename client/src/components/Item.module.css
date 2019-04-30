@@ -1,0 +1,35 @@
+.container {
+    display: flex;
+    flex-direction: column;
+
+    padding: 0.5rem;
+    background: var(--secondary-background-color);
+    margin-bottom: 1rem;
+}
+
+.footer {
+    display: flex;
+    flex-direction: row;
+}
+
+.action {
+    padding-right: 0.5rem;
+}
+
+.action:after {
+    content: '|';
+    padding-left: 0.5rem;
+}
+
+.action:last-child {
+    padding-right: 0;
+}
+
+.action:last-child:after {
+    content: normal;
+}
+
+.link {
+    text-decoration: none;
+    color: inherit;
+}
