@@ -1,0 +1,34 @@
+{
+  "name": "hackernews",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Mikael Manukyan <arm.localhost@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-node": "^4.0.0",
+    "husky": "^2.1.0",
+    "lint-staged": "^8.1.5",
+    "mrm": "^1.2.1",
+    "prettier": "^1.17.0"
+  },
+  "scripts": {
+    "lint": "eslint \"server/src/**/*.js\"",
+    "format": "prettier --write \"server/src/**/*.{js,json,graphql}\" && eslint --fix \"server/src/**/*.js\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./server/src/**/*.{js,json,graphql}": [
+      "prettier --write",
+      "git add"
+    ],
+    "./server/src/**/*.{js}": [
+      "eslint --fix",
+      "git add"
+    ]
+  }
+}

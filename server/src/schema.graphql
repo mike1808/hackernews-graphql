@@ -1,0 +1,143 @@
+type Query {
+  allItems(first: Int, last: Int, before: Cursor, after: Cursor): ItemConnection
+  allUsers(first: Int, last: Int, before: Cursor, after: Cursor): UserConnection
+  node(id: ID!): Node
+}
+
+input PostLinkInput {
+  title: String!
+  url: String!
+}
+
+type PostLinkPayload {
+  item: Item!
+}
+
+input PostPostInput {
+  title: String!
+  text: String!
+}
+
+type PostPostPayload {
+  item: Item!
+}
+
+input AddCommentInput {
+  text: String!
+  item: ID!
+  by: ID!
+}
+
+type AddCommentPaload {
+  comment: Comment!
+}
+
+type Mutation {
+  postLink(input: PostLinkInput!): PostLinkPayload!
+  postPost(input: PostPostInput!): PostPostPayload!
+  addComment(input: AddCommentInput!): AddCommentPaload!
+}
+
+interface Node {
+  id: ID!
+}
+
+scalar Cursor
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+type Item implements Node {
+  id: ID!
+  type: ItemType!
+  url: String
+  text: String
+  title: String!
+  comments(
+    first: Int
+    last: Int
+    before: Cursor
+    after: Cursor
+  ): CommentConnection!
+  votes(first: Int, last: Int, before: Cursor, after: Cursor): VoteConnection!
+  createdAt: String!
+  by: User!
+}
+
+enum ItemType {
+  LINK
+  POLL
+  POST
+}
+
+type ItemConnection {
+  edges: [ItemEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ItemEdge {
+  cursor: Cursor!
+  node: Item
+}
+
+type Comment implements Node {
+  id: ID!
+  item: Item!
+  text: String!
+  by: User!
+  createdAt: String!
+}
+
+type CommentConnection {
+  edges: [CommentEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CommentEdge {
+  cursor: Cursor!
+  node: Comment
+}
+
+type Vote implements Node {
+  id: ID!
+  item: Item!
+  type: VoteType!
+  by: User!
+  createdAt: String!
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+type VoteConnection {
+  edges: [VoteEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type VoteEdge {
+  cursor: Cursor!
+  node: Vote
+}
+
+type User implements Node {
+  id: ID!
+  username: String!
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo
+  totalCount: Int!
+}
+
+type UserEdge {
+  cursor: Cursor!
+  node: User!
+}

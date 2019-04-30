@@ -1,0 +1,15 @@
+{
+  "name": "hackernews-server",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "graphql": "^14.2.1",
+    "graphql-yoga": "^1.17.4",
+    "mongoose": "^5.5.4"
+  }
+}
