@@ -1,34 +1,41 @@
-const Item = require('mongoose').model('Item');
-const Comment = require('mongoose').model('Comment');
+import { getModelAndIdFromId } from '../db/helpers';
+import { Item, Vote } from '../db/models';
 
-function postLink(parent, args) {
+function postLink(parent, { input }) {
   return Item.create({
     type: 'LINK',
-    title: args.title,
-    url: args.url,
-    comments: [],
+    title: input.title,
+    url: input.url,
     votes: [],
   });
 }
 
-function postPost(parent, args) {
+function postPost(parent, { input }, context) {
   return Item.create({
     type: 'POST',
-    title: args.title,
-    text: args.text,
+    title: input.title,
+    text: input.text,
+    by: context.user,
   });
 }
 
-function addComment(parent, args) {
-  return Comment.create({
-    item: args.item,
-    text: args.text,
-    by: args.by,
-  });
+function vote(parent, { input }, context) {
+  const type = input.type === 'UP' ? 1 : -1;
+  const [, itemId] = getModelAndIdFromId(input.item);
+
+  return Vote.create({
+    item: itemId,
+    type,
+    by: context.user,
+  })
+    .then(() => Item.findById(itemId))
+    .then(item => ({ item }));
 }
 
-exports.resolvers = {
-  postLink,
-  postPost,
-  addComment,
+export const resolvers = {
+  Mutation: {
+    postLink,
+    postPost,
+    vote,
+  },
 };

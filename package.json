@@ -1,9 +1,14 @@
 {
   "name": "hackernews",
+  "private": true,
+  "workspaces": {
+    "packages": ["client", "server"],
+    "nohoist": ["**/babel-jest/**", "**/babel-jest"]
+  },
   "version": "1.0.0",
   "main": "index.js",
-  "author": "Mikael Manukyan <arm.localhost@gmail.com>",
-  "license": "MIT",
+  "author": "Mikael Manukyan <mikael@manukyan.dev>",
+  "license": "Private",
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-node": "^4.0.0",
@@ -13,8 +18,10 @@
     "prettier": "^1.17.0"
   },
   "scripts": {
-    "lint": "eslint \"server/src/**/*.js\"",
-    "format": "prettier --write \"server/src/**/*.{js,json,graphql}\" && eslint --fix \"server/src/**/*.js\""
+    "lint:server": "eslint \"server/src/**/*.js\"",
+    "lint:client": "eslint \"client/src/**/*.js\"",
+    "format:server": "prettier --write \"server/src/**/*.{js,json,graphql}\" && eslint --fix \"server/src/**/*.js\"",
+    "format:client": "prettier --write \"client/src/**/*.{js,json,graphql}\" && eslint --fix \"client/src/**/*.js\""
   },
   "husky": {
     "hooks": {
@@ -29,6 +36,15 @@
     "./server/src/**/*.{js}": [
       "eslint --fix",
       "git add"
+    ],
+    "./client/src/**/*.{js,json,graphql}": [
+      "prettier --write",
+      "git add"
+    ],
+    "./client/src/**/*.{js}": [
+      "eslint --fix",
+      "git add"
     ]
-  }
+  },
+  "dependencies": {}
 }

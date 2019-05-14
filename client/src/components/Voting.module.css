@@ -1,0 +1,13 @@
+.voting {
+
+    display: flex;
+    flex-direction: column;
+}
+
+.up {
+    margin-bottom: 0.5rem;
+}
+
+.down {
+
+}

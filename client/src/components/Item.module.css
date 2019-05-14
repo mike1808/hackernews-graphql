@@ -1,10 +1,19 @@
 .container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 
     padding: 0.5rem;
     background: var(--secondary-background-color);
     margin-bottom: 1rem;
+}
+
+.voting {
+    padding-right: 1rem;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
 }
 
 .footer {

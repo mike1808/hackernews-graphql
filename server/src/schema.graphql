@@ -22,20 +22,19 @@ type PostPostPayload {
   item: Item!
 }
 
-input AddCommentInput {
-  text: String!
+input VoteInput {
   item: ID!
-  by: ID!
+  type: VoteType
 }
 
-type AddCommentPaload {
-  comment: Comment!
+type VotePayload {
+  item: Item!
 }
 
 type Mutation {
   postLink(input: PostLinkInput!): PostLinkPayload!
   postPost(input: PostPostInput!): PostPostPayload!
-  addComment(input: AddCommentInput!): AddCommentPaload!
+  vote(input: VoteInput!): VotePayload!
 }
 
 interface Node {
@@ -55,13 +54,9 @@ type Item implements Node {
   url: String
   text: String
   title: String!
-  comments(
-    first: Int
-    last: Int
-    before: Cursor
-    after: Cursor
-  ): CommentConnection!
   votes(first: Int, last: Int, before: Cursor, after: Cursor): VoteConnection!
+  rating: Int!
+  canVote: Boolean!
   createdAt: String!
   by: User!
 }
@@ -81,25 +76,6 @@ type ItemConnection {
 type ItemEdge {
   cursor: Cursor!
   node: Item
-}
-
-type Comment implements Node {
-  id: ID!
-  item: Item!
-  text: String!
-  by: User!
-  createdAt: String!
-}
-
-type CommentConnection {
-  edges: [CommentEdge]
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type CommentEdge {
-  cursor: Cursor!
-  node: Comment
 }
 
 type Vote implements Node {

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { globalIdPlugin } = require('./plugins');
+import mongoose from 'mongoose';
+import { globalIdPlugin } from './plugins';
 
 mongoose.plugin(globalIdPlugin);
 
@@ -31,15 +31,6 @@ const itemSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    comments: {
-      type: [
-        {
-          type: 'ObjectId',
-          ref: 'Comment',
-        },
-      ],
-      default: [],
-    },
     votes: {
       type: [
         {
@@ -65,38 +56,7 @@ itemSchema.virtual('gqlType').get(() => 'Item');
 
 itemSchema.index({ createdAt: -1 });
 
-mongoose.model('Item', itemSchema);
-
-const commentSchema = new mongoose.Schema(
-  {
-    item: {
-      type: 'ObjectId',
-      ref: 'Item',
-      required: true,
-    },
-    by: {
-      type: 'ObjectId',
-      ref: 'User',
-      required: true,
-    },
-    text: {
-      type: String,
-      required: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  { id: false }
-);
-commentSchema.virtual('gqlType').get(() => 'Comment');
-
-mongoose.model('Comment', commentSchema);
+export const Item = mongoose.model('Item', itemSchema);
 
 const voteSchema = new mongoose.Schema(
   {
@@ -129,8 +89,9 @@ const voteSchema = new mongoose.Schema(
 
 voteSchema.virtual('gqlType').get(() => 'Vote');
 voteSchema.index({ createdAt: -1 });
+voteSchema.index({ item: 1, by: 1 }, { unique: true });
 
-mongoose.model('Vote', voteSchema);
+export const Vote = mongoose.model('Vote', voteSchema);
 
 const userSchema = new mongoose.Schema(
   {
@@ -155,4 +116,4 @@ const userSchema = new mongoose.Schema(
 userSchema.virtual('gqlType').get(() => 'User');
 userSchema.index({ createdAt: -1 });
 
-mongoose.model('User', userSchema);
+export const User = mongoose.model('User', userSchema);

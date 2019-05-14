@@ -1,13 +1,13 @@
-const Item = require('mongoose').model('Item');
-const { getDocuments, getConnectionResolvers } = require('./helpers');
+import { Item } from '../db/models';
+import { getDocuments, getConnectionResolvers } from './helpers';
 
 function item(parent) {
   return Item.findById(parent.id);
 }
 
-exports.getVotes = getDocuments;
+export { getDocuments as getVotes };
 
-exports.resolvers = {
+export const resolvers = {
   Vote: {
     item,
   },

@@ -1,14 +1,18 @@
-const { allItems } = require('./item');
-const { allUsers } = require('./user');
-const { getModelAndIdFromId } = require('../models/helpers');
+import { allItems } from './item';
+
+import { allUsers } from './user';
+
+import { getModelAndIdFromId } from '../db/helpers';
 
 function node(parent, { id }) {
   const [Model, _id] = getModelAndIdFromId(id);
   return Model.findById(_id);
 }
 
-exports.resolvers = {
-  node,
-  allItems,
-  allUsers,
+export const resolvers = {
+  Query: {
+    node,
+    allItems,
+    allUsers,
+  },
 };

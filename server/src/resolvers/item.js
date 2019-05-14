@@ -1,19 +1,9 @@
-const Comment = require('mongoose').model('Comment');
-const Vote = require('mongoose').model('Vote');
-const User = require('mongoose').model('User');
-const Item = require('mongoose').model('Item');
-
-const { getComments } = require('./comment');
-const { getVotes } = require('./vote');
-
-const { getDocuments, getConnectionResolvers } = require('./helpers');
+import { getVotes } from './vote';
+import { Item, Vote, User } from '../db/models';
+import { getDocuments, getConnectionResolvers } from './helpers';
 
 async function allItems(parent, { before, after, first, last }) {
   return getDocuments(Item.find(), { first, last, before, after }, 'id', -1);
-}
-
-function comments(parent, args) {
-  return getComments(Comment.find({ post: parent.id }), args, 'id', -1);
 }
 
 function votes(parent, args) {
@@ -28,14 +18,42 @@ function by(parent) {
   return User.findById(parent.by);
 }
 
-exports.allItems = allItems;
+function rating(parent) {
+  return Vote.aggregate([
+    {
+      $match: { item: parent._id },
+    },
+    {
+      $group: {
+        _id: '$item',
+        total: { $sum: '$type' },
+      },
+    },
+  ]).then(([doc]) => {
+    if (doc) return doc.total;
+    return 0;
+  });
+}
 
-exports.resolvers = {
+function canVote(parent, args, context) {
+  return Vote.findOne(
+    {
+      item: parent._id,
+      by: context.user,
+    },
+    'id'
+  ).then(doc => !doc);
+}
+
+export { allItems };
+
+export const resolvers = {
   Item: {
-    comments,
     votes,
     createdAt,
     by,
+    rating,
+    canVote,
   },
   ...getConnectionResolvers('Item'),
 };

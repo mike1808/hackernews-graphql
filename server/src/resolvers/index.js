@@ -1,32 +1,19 @@
-const Query = require('./query').resolvers;
-const { Item, ItemConnection, ItemEdge } = require('./item').resolvers;
-const Node = require('./node').resolvers;
-const Cursor = require('./cursor');
-const {
-  Comment,
-  CommentConnection,
-  CommentEdge,
-} = require('./comment').resolvers;
-const { UserConnection, UserEdge } = require('./user').resolvers;
+import Cursor from './cursor';
 
-const { Vote, VoteConnection, VoteEdge } = require('./vote').resolvers;
-const Mutation = require('./mutation').resolvers;
+import { resolvers as QueryResolves } from './query';
+import { resolvers as ItemResolvers } from './item';
+import { resolvers as NodeResolves } from './node';
+import { resolvers as UserResolvers } from './user';
+import { resolvers as VoteResolvers } from './vote';
+import { resolvers as MutationResolvers } from './mutation';
 
-module.exports = {
-  Query,
-  Mutation,
-
-  Item,
-  ItemConnection,
-  ItemEdge,
-  Node,
+export default {
   Cursor,
-  Comment,
-  CommentConnection,
-  CommentEdge,
-  Vote,
-  VoteConnection,
-  VoteEdge,
-  UserConnection,
-  UserEdge,
+
+  ...QueryResolves,
+  ...ItemResolvers,
+  ...NodeResolves,
+  ...UserResolvers,
+  ...VoteResolvers,
+  ...MutationResolvers,
 };

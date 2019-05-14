@@ -1,22 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import TimeAgo from './TimeAgo';
 
 import classes from './Item.module.css';
 
-const Item = ({ type, title, url, by, createdAt, commentsCount }) => {
+const Item = ({ type, title, url, by, points, createdAt, renderVoting }) => {
   return (
     <div className={classes.container}>
-      <h2>{type === 'link'
-        ? <a className={classes.link} href={url}>{title}</a>
-        : title
-      }
-      </h2>
-      <div className={classes.footer}>
-        <div className={classes.action}>
-          123 points by {by.username} on {createdAt}
-        </div>
-        <div className={classes.action}>
-          {commentsCount} comments
+      <div className={classes.voting}>{renderVoting()}</div>
+      <div className={classes.item}>
+        <h2>
+          {type === 'LINK' ? (
+            <a className={classes.link} href={url}>
+              {title}
+            </a>
+          ) : (
+            title
+          )}
+        </h2>
+        <div className={classes.footer}>
+          <div className={classes.action}>
+            {points} {points === 1 ? 'point' : 'points'} by {by.username}{' '}
+            <TimeAgo date={createdAt} />
+          </div>
         </div>
       </div>
     </div>
@@ -24,14 +30,14 @@ const Item = ({ type, title, url, by, createdAt, commentsCount }) => {
 };
 
 Item.propTypes = {
-  type: PropTypes.oneOf(['link', 'post']).isRequired,
+  type: PropTypes.oneOf(['LINK', 'POST']).isRequired,
   title: PropTypes.string.isRequired,
-  url: PropTypes.isRequired,
-  commentsCount: PropTypes.number.isRequired,
+  url: PropTypes.string.isRequired,
   by: PropTypes.shape({
     username: PropTypes.string.isRequired,
   }).isRequired,
   createdAt: PropTypes.string.isRequired,
+  points: PropTypes.number.isRequired,
 };
 
 export default Item;

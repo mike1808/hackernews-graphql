@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-const { btoa, atob } = require('../util');
+import mongoose from 'mongoose';
+import { btoa, atob } from '../util';
 
 function getModelAndIdFromId(id) {
-  const [modelName, _id] = btoa(id).split('-');
+  const [modelName, _id] = atob(id).split('-');
 
   if (!modelName || !id) throw new RangeError('Invalid ID');
 
@@ -15,11 +15,11 @@ function getModelAndIdFromId(id) {
 
 function getIdFromModelAndId(modelName, _id) {
   if (_id !== null) {
-    return atob(`${modelName}-${_id}`);
+    return btoa(`${modelName}-${_id}`);
   }
 
   return null;
 }
 
-exports.getModelAndIdFromId = getModelAndIdFromId;
-exports.getIdFromModelAndId = getIdFromModelAndId;
+export { getModelAndIdFromId };
+export { getIdFromModelAndId };

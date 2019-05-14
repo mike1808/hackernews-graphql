@@ -1,9 +1,13 @@
-async function getDocuments(
+export async function getDocuments(
   query,
   { first, last, before, after },
   orderField,
   order
 ) {
+  if (!(first || last)) {
+    first = 20;
+  }
+
   if (orderField === 'id') {
     query = (await limitQueryWithId(query, before, after, order)).query;
   } else {
@@ -21,7 +25,7 @@ async function getDocuments(
   };
 }
 
-async function limitQueryWithId(query, before, after, order) {
+export async function limitQueryWithId(query, before, after, order) {
   const filter = {};
 
   if (before) {
@@ -37,7 +41,7 @@ async function limitQueryWithId(query, before, after, order) {
   return { query: query.find(filter).sort({ _id: order }) };
 }
 
-async function limitQuery(query, field, order, before, after) {
+export async function limitQuery(query, field, order, before, after) {
   let filter = {};
   const limits = {};
   const ors = [];
@@ -94,7 +98,7 @@ async function limitQuery(query, field, order, before, after) {
   return { query: query.find(filter).sort({ [field]: order, _id: order }) };
 }
 
-async function applyPagination(query, first, last) {
+export async function applyPagination(query, first, last) {
   let count;
   if (first || last) {
     count = await query.model
@@ -134,14 +138,14 @@ async function applyPagination(query, first, last) {
   };
 }
 
-function getTotalCount(query) {
+export function getTotalCount(query) {
   return query.model
     .find()
     .countDocuments()
     .exec();
 }
 
-function getConnectionResolvers(type) {
+export function getConnectionResolvers(type) {
   return {
     [`${type}Edge`]: {
       cursor(parent) {
@@ -158,10 +162,3 @@ function getConnectionResolvers(type) {
     },
   };
 }
-
-exports.limitQueryWithId = limitQueryWithId;
-exports.limitQuery = limitQuery;
-exports.applyPagination = applyPagination;
-exports.getTotalCount = getTotalCount;
-exports.getDocuments = getDocuments;
-exports.getConnectionResolvers = getConnectionResolvers;

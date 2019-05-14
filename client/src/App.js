@@ -1,42 +1,16 @@
 import React from 'react';
+import { ApolloProvider } from 'react-apollo';
 import Layout from './components/Layout';
-import Item from './components/Item';
-import PropTypes from 'prop-types';
-
-const items = [{
-  id: 1,
-  type: 'link',
-  title: 'Link 1',
-  url: 'http://localhost:3000/',
-  commentsCount: 123,
-  by: {
-    username: 'me',
-  },
-  createdAt: 'today',
-},
-  {
-    id: 2,
-    type: 'link',
-    title: 'Link 1',
-    url: 'http://localhost:3000/',
-    commentsCount: 123,
-    by: {
-      username: 'me',
-    },
-    createdAt: 'today',
-  },
-];
+import client from './api';
+import Feed from './containers/Feed';
 
 function App() {
   return (
-    <Layout>
-      {items.map(item => (
-        <Item
-          key={item.id}
-          {...item}
-        />
-      ))}
-    </Layout>
+    <ApolloProvider client={client}>
+      <Layout>
+        <Feed />
+      </Layout>
+    </ApolloProvider>
   );
 }
 

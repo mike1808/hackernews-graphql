@@ -1,13 +1,12 @@
-const User = require('mongoose').model('User');
-
-const { getDocuments, getConnectionResolvers } = require('./helpers');
+import { User } from '../db/models';
+import { getDocuments, getConnectionResolvers } from './helpers';
 
 async function allUsers(parent, { before, after, first, last }) {
   return getDocuments(User.find(), { first, last, before, after }, 'id', -1);
 }
 
-exports.allUsers = allUsers;
+export { allUsers };
 
-exports.resolvers = {
+export const resolvers = {
   ...getConnectionResolvers('User'),
 };

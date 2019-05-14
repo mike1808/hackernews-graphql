@@ -1,30 +1,32 @@
-const path = require('path');
-const { GraphQLServer } = require('graphql-yoga');
-const mongoose = require('mongoose');
-const config = require('./config');
+// @flow
 
-mongoose.connect(config.mongoURL, { useNewUrlParser: true });
-mongoose.set('debug', true);
+import { ApolloServer, gql } from 'apollo-server';
+import initDb from './db';
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+initDb();
 
-require('./models');
+import path from 'path';
+import fs from 'fs';
+import config from './config';
 
-if (config.populateDB) {
-  require('./populate')();
-}
+import resolvers from './resolvers';
 
-const resolvers = require('./resolvers');
-
-const server = new GraphQLServer({
-  typeDefs: path.join(__dirname, 'schema.graphql'),
+const server = new ApolloServer({
+  typeDefs: gql(
+    fs.readFileSync(path.join(__dirname, 'schema.graphql'), 'utf8')
+  ),
   resolvers,
   options: {
     port: config.port,
   },
+  context: context => ({
+    ...context,
+    user: '5cc79927aebc084a88fa08a1',
+  }),
 });
 
-server.start(({ port }) =>
-  console.log(`Server is running on http://localhost:${port}`)
-);
+server
+  .listen()
+  .then(({ port }) =>
+    console.log(`Server is running on http://localhost:${port}`)
+  );

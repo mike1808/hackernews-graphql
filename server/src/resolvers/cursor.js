@@ -1,6 +1,6 @@
-const { GraphQLScalarType } = require('graphql');
-const { Kind } = require('graphql');
-const { atob, btoa } = require('../util');
+import { GraphQLScalarType, Kind } from 'graphql';
+
+import { atob, btoa } from '../util';
 
 function toCursor({ value }) {
   return atob(value);
@@ -34,4 +34,4 @@ const CursorType = new GraphQLScalarType({
   },
 });
 
-module.exports = CursorType;
+export default CursorType;

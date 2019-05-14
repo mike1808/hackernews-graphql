@@ -1,4 +1,4 @@
-const { getIdFromModelAndId } = require('./helpers');
+import { getIdFromModelAndId } from './helpers';
 
 function globalIdPlugin(schema) {
   schema.set('id', false);
@@ -12,4 +12,4 @@ function globalIdPlugin(schema) {
   });
 }
 
-exports.globalIdPlugin = globalIdPlugin;
+export { globalIdPlugin };
