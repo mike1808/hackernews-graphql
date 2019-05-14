@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import { btoa, atob } from '../util';
+import { fromGlobalId } from 'graphql-relay';
 
-function getModelAndIdFromId(id) {
-  const [modelName, _id] = atob(id).split('-');
+export function getModelAndIdFromId(id) {
+  const { type: modelName, id: _id } = fromGlobalId(id);
 
   if (!modelName || !id) throw new RangeError('Invalid ID');
 
@@ -12,14 +12,3 @@ function getModelAndIdFromId(id) {
 
   return [model, _id];
 }
-
-function getIdFromModelAndId(modelName, _id) {
-  if (_id !== null) {
-    return btoa(`${modelName}-${_id}`);
-  }
-
-  return null;
-}
-
-export { getModelAndIdFromId };
-export { getIdFromModelAndId };

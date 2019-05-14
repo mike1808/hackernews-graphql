@@ -2,8 +2,13 @@ import { getVotes } from './vote';
 import { Item, Vote, User } from '../db/models';
 import { getDocuments, getConnectionResolvers } from './helpers';
 
-async function allItems(parent, { before, after, first, last }) {
-  return getDocuments(Item.find(), { first, last, before, after }, 'id', -1);
+export async function feed(parent, { before, after, first, last, query }) {
+  const q = query
+    ? {
+        $text: { $search: query || '' },
+      }
+    : null;
+  return getDocuments(Item.find(q), { first, last, before, after }, 'id', -1);
 }
 
 function votes(parent, args) {
@@ -44,8 +49,6 @@ function canVote(parent, args, context) {
     'id'
   ).then(doc => !doc);
 }
-
-export { allItems };
 
 export const resolvers = {
   Item: {

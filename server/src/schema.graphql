@@ -1,5 +1,11 @@
 type Query {
-  allItems(first: Int, last: Int, before: Cursor, after: Cursor): ItemConnection
+  feed(
+    first: Int
+    last: Int
+    before: Cursor
+    after: Cursor
+    query: String
+  ): ItemConnection
   allUsers(first: Int, last: Int, before: Cursor, after: Cursor): UserConnection
   node(id: ID!): Node
 }
@@ -10,7 +16,7 @@ input PostLinkInput {
 }
 
 type PostLinkPayload {
-  item: Item!
+  item: ItemEdge!
 }
 
 input PostPostInput {
@@ -19,7 +25,7 @@ input PostPostInput {
 }
 
 type PostPostPayload {
-  item: Item!
+  item: ItemEdge!
 }
 
 input VoteInput {
@@ -28,7 +34,7 @@ input VoteInput {
 }
 
 type VotePayload {
-  item: Item!
+  item: ItemEdge!
 }
 
 type Mutation {
@@ -63,7 +69,6 @@ type Item implements Node {
 
 enum ItemType {
   LINK
-  POLL
   POST
 }
 

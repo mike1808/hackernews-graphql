@@ -1,13 +1,13 @@
 import { GraphQLScalarType, Kind } from 'graphql';
 
-import { atob, btoa } from '../util';
+import { unbase64, base64 } from '../util';
 
 function toCursor({ value }) {
-  return atob(value);
+  return base64(value);
 }
 
 function fromCursor(string) {
-  const value = btoa(string);
+  const value = unbase64(string);
 
   if (value) {
     return { value };

@@ -1,4 +1,4 @@
-import { getIdFromModelAndId } from './helpers';
+import { toGlobalId } from 'graphql-relay';
 
 function globalIdPlugin(schema) {
   schema.set('id', false);
@@ -8,7 +8,7 @@ function globalIdPlugin(schema) {
     const modelName = this.constructor.modelName;
 
     // eslint-disable-next-line no-invalid-this
-    return getIdFromModelAndId(modelName, this._id);
+    return toGlobalId(modelName, this._id);
   });
 }
 

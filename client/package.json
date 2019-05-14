@@ -4,16 +4,20 @@
   "private": true,
   "dependencies": {
     "apollo-boost": "^0.3.1",
+    "classnames": "^2.2.6",
+    "font-awesome": "^4.7.0",
+    "formik": "^1.5.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-apollo": "^2.5.5",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.0",
-    "timeago.js": "^4.0.0-beta.2"
+    "react-use": "^9.0.0",
+    "timeago.js": "^4.0.0-beta.2",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
-    "flow-bin": "^0.98.0",
     "graphql": "^14.3.0"
   },
   "scripts": {

@@ -1,4 +1,4 @@
-import { allItems } from './item';
+import { feed } from './item';
 
 import { allUsers } from './user';
 
@@ -12,7 +12,7 @@ function node(parent, { id }) {
 export const resolvers = {
   Query: {
     node,
-    allItems,
+    feed,
     allUsers,
   },
 };

@@ -55,6 +55,11 @@ const itemSchema = new mongoose.Schema(
 itemSchema.virtual('gqlType').get(() => 'Item');
 
 itemSchema.index({ createdAt: -1 });
+itemSchema.index({
+  text: 'text',
+  title: 'text',
+  url: 'text',
+});
 
 export const Item = mongoose.model('Item', itemSchema);
 
