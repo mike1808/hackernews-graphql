@@ -2,7 +2,7 @@
 
 ## Description
 
-This is implementation of HackerNews using GraphQL and React.
+This is the implementation of HackerNews using GraphQL and React.
 
 ## Installation
 
@@ -20,7 +20,6 @@ yarn install
 
 It will install all packages both for `./client` and `./server`.
 
-
 Then you need to create `server/.env` file. The sample content can be:
 
 ```
@@ -28,7 +27,7 @@ PORT=4000
 HN_MONGO_URL=mongodb://root:example@localhost/hackernews?authSource=admin
 ```
 
-You can modify `HN_MONGO_URL` env var if you have MongoDB installed, otherwise, you can start a Docker container using provider docker-compose file. Also, you can restore from the dump which populated the DB with the real HN posts.
+You can modify `HN_MONGO_URL` env var if you have MongoDB installed, otherwise, you can start a Docker container using provided docker-compose file. Also, you can restore from the dump which populates the DB with the real HN posts.
 The dump can be downloaded [here](https://transfer.sh/HPgP2/hackernews.archive) and placed in `dumps` folder. Otherwise, just run the following command which will do the same.
 
 ```
@@ -44,7 +43,7 @@ docker-compose up -d mongo
 And then you can start the server:
 
 ```
-cd server 
+cd server
 yarn start
 ```
 
@@ -54,4 +53,3 @@ And start the client:
 cd client
 yarn start
 ```
-
