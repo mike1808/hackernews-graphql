@@ -1,26 +1,41 @@
+// @flow
+
 import React from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from '@reach/tooltip';
+import classNames from 'classnames';
+
 import classes from './Voting.module.css';
 
-const Voting = ({ onVoteUp, onVoteDown, disabled }) => {
+type Props = {|
+  onVoteUp: (SyntheticMouseEvent<HTMLButtonElement>) => mixed,
+  onVoteDown: (SyntheticMouseEvent<HTMLButtonElement>) => mixed,
+  disabled?: boolean,
+|};
+
+const Voting = ({ onVoteUp, onVoteDown, disabled }: Props) => {
   return (
     <div className={classes.voting}>
-      <button
-        disabled={disabled}
-        onClick={onVoteUp}
-        type="button"
-        className={classes.up}
-      >
-        Up
-      </button>
-      <button
-        disabled={disabled}
-        onClick={onVoteDown}
-        type="button"
-        className={classes.down}
-      >
-        Down
-      </button>
+      <Tooltip label="Vote up">
+        <button
+          className={classNames(classes.up, classes.vote)}
+          disabled={disabled}
+          onClick={onVoteUp}
+          type="button"
+        >
+          ▲
+        </button>
+      </Tooltip>
+      <Tooltip label="Vote down">
+        <button
+          className={classNames(classes.down, classes.vote)}
+          disabled={disabled}
+          onClick={onVoteDown}
+          type="button"
+        >
+          ▼
+        </button>
+      </Tooltip>
     </div>
   );
 };

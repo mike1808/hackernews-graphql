@@ -1,44 +1,52 @@
 .container {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 
-    padding: 0.5rem;
-    background: var(--secondary-background-color);
-    margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: var(--secondary-background-color);
+  margin-bottom: 1rem;
 }
 
 .voting {
-    padding-right: 1rem;
+  padding-right: 1rem;
 }
 
 .item {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.item h2 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .footer {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .action {
-    padding-right: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .action:after {
-    content: '|';
-    padding-left: 0.5rem;
+  content: '|';
+  padding-left: 0.5rem;
 }
 
 .action:last-child {
-    padding-right: 0;
+  padding-right: 0;
 }
 
 .action:last-child:after {
-    content: normal;
+  content: normal;
 }
 
 .link {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }

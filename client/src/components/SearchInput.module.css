@@ -1,50 +1,49 @@
 .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .searchbar {
-    float: right;
-    color: blac;
-    padding: 6px 10px;
-    width: 120px;
-    border: none;
-    margin-top: 1px;
-    margin-right: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-bottom: black solid 2px;
-    transition: 0.3s;
+  float: right;
+  color: blac;
+  padding: 6px 10px;
+  width: 120px;
+  border: none;
+  margin-top: 1px;
+  margin-right: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-bottom: black solid 2px;
+  transition: 0.3s;
 }
 
 .searchbar::placeholder {
-    color: #000;
-    font-size: 1rem;
-    font-weight: bold;
-    /* transition: 0.2s; */
+  color: #000;
+  font-size: 1rem;
+  font-weight: bold;
+  /* transition: 0.2s; */
 }
 
 .searchbar:focus {
-    width: 400px;
-    font-size: 1em;
-    font-weight: bold;
-    transition: 0.3s;
-    /* Stops the input box from inheriting the styling from the inputs on the request form */
-    border-bottom: black solid 2px;
-    outline: none;
+  width: 400px;
+  font-size: 1em;
+  font-weight: bold;
+  transition: 0.3s;
+  /* Stops the input box from inheriting the styling from the inputs on the request form */
+  border-bottom: black solid 2px;
+  outline: none;
 }
 
 .btnSearch {
-    cursor: pointer;
-    color: black;
-    text-decoration: none !important;
-    font-size: 1.5em;
-    padding-top: 5px;
-    margin-right: 40px;
-    padding: 0;
-    background: none;
-    border: none;
+  cursor: pointer;
+  color: black;
+  text-decoration: none !important;
+  font-size: 1.5em;
+  padding-top: 5px;
+  margin-right: 40px;
+  padding: 0;
+  background: none;
+  border: none;
 }

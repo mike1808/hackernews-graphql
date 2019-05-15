@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Mutation } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 import CreateItemForm from '../components/CreateItemForm';
 import { FEED_QUERY } from './Feed';
 
@@ -22,6 +22,7 @@ const ITEM_MUTATION = gql`
           title
           url
           by {
+            id
             username
           }
           createdAt
@@ -46,10 +47,15 @@ const CreateItem = ({ history }: Props) => {
             },
           }
         ) => {
-          const data = cache.readQuery({
-            query: FEED_QUERY,
-            variables: { query: '' },
-          });
+          let data;
+          try {
+            data = cache.readQuery({
+              query: FEED_QUERY,
+              variables: { query: '' },
+            });
+          } catch {} // feed wasn't fetched
+
+          if (!data) return;
 
           data.feed.totalCount += 1;
           data.feed.edges.unshift(item);

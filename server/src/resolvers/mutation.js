@@ -1,5 +1,8 @@
 import { getModelAndIdFromId } from '../db/helpers';
 import { Item, Vote } from '../db/models';
+import pubsub from '../pubsub';
+
+export const ITEM_ADDED = 'ITEM_ADDED';
 
 async function postLink(parent, { input }, context) {
   return Item.create({
@@ -8,7 +11,10 @@ async function postLink(parent, { input }, context) {
     url: input.url,
     votes: [],
     by: context.user,
-  }).then(item => ({ item }));
+  }).then(item => {
+    pubsub.publish(ITEM_ADDED, { itemAdded: item });
+    return { item };
+  });
 }
 
 async function postPost(parent, { input }, context) {

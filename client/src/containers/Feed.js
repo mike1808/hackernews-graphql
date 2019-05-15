@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Query, Mutation } from 'react-apollo';
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 import Item from '../components/Item';
 import Voting from '../components/Voting';
 import SearchInput from '../components/SearchInput';
@@ -22,6 +22,7 @@ export const FEED_QUERY = gql`
           title
           url
           by {
+            id
             username
           }
           createdAt
@@ -33,8 +34,29 @@ export const FEED_QUERY = gql`
   }
 `;
 
-const VoteMutation = gql`
-  mutation Vote($input: VoteInput!) {
+const FEED_SUBSCRIPTION = gql`
+  subscription onItemAdded {
+    itemAdded {
+      cursor
+      node {
+        id
+        type
+        title
+        url
+        by {
+          id
+          username
+        }
+        createdAt
+        rating
+        canVote
+      }
+    }
+  }
+`;
+
+const VOTE_MUTATION = gql`
+  mutation VoteMutation($input: VoteInput!) {
     vote(input: $input) {
       item {
         cursor
@@ -48,6 +70,68 @@ const VoteMutation = gql`
   }
 `;
 
+const subscribeToNewItems = subscribeToMore => {
+  subscribeToMore({
+    document: FEED_SUBSCRIPTION,
+    updateQuery: (prev, { subscriptionData }) => {
+      if (!subscriptionData.data) return prev;
+      const newItemEdge = subscriptionData.data.itemAdded;
+      const exists = prev.feed.edges.find(
+        ({ node: { id } }) => id === newItemEdge.node.id
+      );
+
+      if (exists) return prev;
+
+      return {
+        ...prev,
+        feed: {
+          ...prev.feed,
+          totalCount: prev.feed.totalCount + 1,
+          edges: [newItemEdge, ...prev.feed.edges],
+        },
+      };
+    },
+  });
+};
+
+type Data = {
+  feed: {
+    totalCount: number,
+    edges: [
+      {|
+        cursor: string,
+        node: {
+          id: string,
+        },
+      |},
+    ],
+    pageInfo: {
+      hasNextPage: boolean,
+    },
+  },
+};
+const onLoadMore = (fetchMore: Function, data: Data) => {
+  fetchMore({
+    variables: {
+      cursor: data.feed.edges[data.feed.edges.length - 1].cursor,
+    },
+    updateQuery: (previousResult, { fetchMoreResult }) => {
+      const newEdges = fetchMoreResult.feed.edges;
+      const pageInfo = fetchMoreResult.feed.pageInfo;
+
+      return newEdges.length
+        ? {
+            feed: {
+              ...previousResult.feed,
+              edges: [...previousResult.feed.edges, ...newEdges],
+              pageInfo,
+            },
+          }
+        : previousResult;
+    },
+  });
+};
+
 const Feed = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
@@ -55,31 +139,11 @@ const Feed = () => {
     <>
       <SearchInput value={searchQuery} onChange={setSearchQuery} />
       <Query query={FEED_QUERY} variables={{ query: searchQuery }}>
-        {({ loading, error, data, fetchMore }) => {
+        {({ loading, error, data, fetchMore, subscribeToMore }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
 
-          const onLoadMore = () => {
-            fetchMore({
-              variables: {
-                cursor: data.feed.edges[data.feed.edges.length - 1].cursor,
-              },
-              updateQuery: (previousResult, { fetchMoreResult }) => {
-                const newEdges = fetchMoreResult.feed.edges;
-                const pageInfo = fetchMoreResult.feed.pageInfo;
-
-                return newEdges.length
-                  ? {
-                      feed: {
-                        __typename: previousResult.feed.__typename,
-                        edges: [...previousResult.feed.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
-                  : previousResult;
-              },
-            });
-          };
+          subscribeToNewItems(subscribeToMore);
 
           return (
             <>
@@ -91,9 +155,10 @@ const Feed = () => {
                 ) : (
                   <p>No results</p>
                 ))}
+
               {data.feed.edges.map(({ node }) => {
                 return (
-                  <Mutation mutation={VoteMutation} key={node.id}>
+                  <Mutation mutation={VOTE_MUTATION} key={node.id}>
                     {vote => (
                       <Item
                         id={node.id}
@@ -109,14 +174,20 @@ const Feed = () => {
                             onVoteUp={() =>
                               vote({
                                 variables: {
-                                  input: { item: node.id, type: 'UP' },
+                                  input: {
+                                    item: node.id,
+                                    type: 'UP',
+                                  },
                                 },
                               })
                             }
                             onVoteDown={() =>
                               vote({
                                 variables: {
-                                  input: { item: node.id, type: 'DOWN' },
+                                  input: {
+                                    item: node.id,
+                                    type: 'DOWN',
+                                  },
                                 },
                               })
                             }
@@ -129,7 +200,10 @@ const Feed = () => {
               })}
 
               {data.feed.pageInfo.hasNextPage && (
-                <button type="button" onClick={onLoadMore}>
+                <button
+                  type="button"
+                  onClick={() => onLoadMore(onLoadMore, data)}
+                >
                   Load More
                 </button>
               )}

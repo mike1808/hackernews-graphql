@@ -2,22 +2,31 @@
   "name": "hackernews",
   "private": true,
   "workspaces": {
-    "packages": ["client", "server"],
-    "nohoist": ["**/babel-jest/**", "**/babel-jest"]
+    "packages": [
+      "client",
+      "server"
+    ],
+    "nohoist": [
+      "**/babel-jest/**",
+      "**/babel-jest"
+    ]
   },
   "version": "1.0.0",
   "main": "index.js",
   "author": "Mikael Manukyan <mikael@manukyan.dev>",
   "license": "Private",
   "devDependencies": {
+    "@playlyfe/gql": "^2.6.1",
     "eslint": "^5.16.0",
     "eslint-config-node": "^4.0.0",
+    "flow-bin": "^0.98.1",
     "husky": "^2.1.0",
     "lint-staged": "^8.1.5",
     "mrm": "^1.2.1",
     "prettier": "^1.17.0"
   },
   "scripts": {
+    "flow": "flow",
     "lint:server": "eslint \"server/src/**/*.js\"",
     "lint:client": "eslint \"client/src/**/*.js\"",
     "format:server": "prettier --write \"server/src/**/*.{js,json,graphql}\" && eslint --fix \"server/src/**/*.js\"",

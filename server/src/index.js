@@ -18,7 +18,7 @@ async function main() {
 
   const server = new ApolloServer({
     typeDefs: gql(
-      fs.readFileSync(path.join(__dirname, 'schema.graphql'), 'utf8')
+      fs.readFileSync(path.join(__dirname, 'schema.graphql'), 'utf8') // eslint-disable-line no-sync
     ),
     resolvers,
     options: {
@@ -30,11 +30,10 @@ async function main() {
     }),
   });
 
-  return server
-    .listen()
-    .then(({ port }) =>
-      console.log(`Server is running on http://localhost:${port}`)
-    );
+  return server.listen().then(({ url, subscriptionsUrl }) => {
+    console.log(`🚀 Server ready at ${url}`);
+    console.log(`🚀 Subscriptions ready at ${subscriptionsUrl}`);
+  });
 }
 
 main().catch(console.error.bind(console));
