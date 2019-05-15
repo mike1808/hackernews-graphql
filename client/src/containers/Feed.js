@@ -7,6 +7,15 @@ import Item from '../components/Item';
 import Voting from '../components/Voting';
 import SearchInput from '../components/SearchInput';
 
+type Props = {|
+  history: { push: ({}) => mixed },
+  location: {
+    pathname: string,
+    search: string,
+  },
+  match: {},
+|};
+
 export const FEED_QUERY = gql`
   query FeedQuery($query: String, $cursor: Cursor) {
     feed(first: 20, after: $cursor, query: $query) {
@@ -55,6 +64,29 @@ const FEED_SUBSCRIPTION = gql`
   }
 `;
 
+const VOTE_SUBSCRIPTION = gql`
+  subscription onVote {
+    voted {
+      item {
+        cursor
+        node {
+          id
+          type
+          title
+          url
+          by {
+            id
+            username
+          }
+          createdAt
+          rating
+          canVote
+        }
+      }
+    }
+  }
+`;
+
 const VOTE_MUTATION = gql`
   mutation VoteMutation($input: VoteInput!) {
     vote(input: $input) {
@@ -94,56 +126,59 @@ const subscribeToNewItems = subscribeToMore => {
   });
 };
 
-type Data = {
-  feed: {
-    totalCount: number,
-    edges: [
-      {|
-        cursor: string,
-        node: {
-          id: string,
-        },
-      |},
-    ],
-    pageInfo: {
-      hasNextPage: boolean,
-    },
-  },
-};
-const onLoadMore = (fetchMore: Function, data: Data) => {
-  fetchMore({
-    variables: {
-      cursor: data.feed.edges[data.feed.edges.length - 1].cursor,
-    },
-    updateQuery: (previousResult, { fetchMoreResult }) => {
-      const newEdges = fetchMoreResult.feed.edges;
-      const pageInfo = fetchMoreResult.feed.pageInfo;
-
-      return newEdges.length
-        ? {
-            feed: {
-              ...previousResult.feed,
-              edges: [...previousResult.feed.edges, ...newEdges],
-              pageInfo,
-            },
-          }
-        : previousResult;
-    },
+const subscribeToNewVotes = subscribeToMore => {
+  subscribeToMore({
+    document: VOTE_SUBSCRIPTION,
   });
 };
 
-const Feed = () => {
-  const [searchQuery, setSearchQuery] = React.useState('');
+const parseQuery = search => {
+  return new URLSearchParams(search).get('q') || '';
+};
+
+const Feed = ({ history, location }: Props) => {
+  const [searchQuery, setSearchQuery] = React.useState(
+    parseQuery(location.search)
+  );
+
+  React.useEffect(() => {
+    history.push({
+      search: searchQuery ? `?q=${searchQuery}` : '',
+    });
+  }, [searchQuery, history]);
 
   return (
     <>
       <SearchInput value={searchQuery} onChange={setSearchQuery} />
-      <Query query={FEED_QUERY} variables={{ query: searchQuery }}>
+      <Query query={FEED_QUERY} variables={{ query: searchQuery.trim() }}>
         {({ loading, error, data, fetchMore, subscribeToMore }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
 
           subscribeToNewItems(subscribeToMore);
+          subscribeToNewVotes(subscribeToMore);
+
+          const onLoadMore = () => {
+            fetchMore({
+              variables: {
+                cursor: data.feed.edges[data.feed.edges.length - 1].cursor,
+              },
+              updateQuery: (previousResult, { fetchMoreResult }) => {
+                const newEdges = fetchMoreResult.feed.edges;
+                const pageInfo = fetchMoreResult.feed.pageInfo;
+
+                return newEdges.length
+                  ? {
+                      feed: {
+                        ...previousResult.feed,
+                        edges: [...previousResult.feed.edges, ...newEdges],
+                        pageInfo,
+                      },
+                    }
+                  : previousResult;
+              },
+            });
+          };
 
           return (
             <>
@@ -200,10 +235,7 @@ const Feed = () => {
               })}
 
               {data.feed.pageInfo.hasNextPage && (
-                <button
-                  type="button"
-                  onClick={() => onLoadMore(onLoadMore, data)}
-                >
+                <button type="button" onClick={onLoadMore}>
                   Load More
                 </button>
               )}

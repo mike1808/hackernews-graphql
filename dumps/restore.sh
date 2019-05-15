@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-#ls -la docker-entrypoint-initdb.d
-
-#mongorestore --archive=/docker-entrypoint-initdb.d/hackernews.archive
+mongorestore -u "$MONGO_INITDB_ROOT_USERNAME" -p "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase=admin --archive < /docker-entrypoint-initdb.d/hackernews.archive

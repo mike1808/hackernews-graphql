@@ -3,6 +3,7 @@ import { Item, Vote } from '../db/models';
 import pubsub from '../pubsub';
 
 export const ITEM_ADDED = 'ITEM_ADDED';
+export const VOTED = 'VOTED';
 
 async function postLink(parent, { input }, context) {
   return Item.create({
@@ -36,7 +37,11 @@ async function vote(parent, { input }, context) {
     by: context.user,
   })
     .then(() => Item.findById(itemId))
-    .then(item => ({ item }));
+    .then(item => {
+      pubsub.publish(VOTED, { voted: { item } });
+
+      return { item };
+    });
 }
 
 export const resolvers = {

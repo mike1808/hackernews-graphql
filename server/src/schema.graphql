@@ -12,6 +12,7 @@ type Query {
 
 type Subscription {
   itemAdded: ItemEdge!
+  voted: VotePayload!
 }
 
 input PostLinkInput {

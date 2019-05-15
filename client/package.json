@@ -23,6 +23,7 @@
     "react-use": "^9.0.0",
     "subscriptions-transport-ws": "^0.9.16",
     "timeago.js": "^4.0.0-beta.2",
+    "url-search-params-polyfill": "^6.0.0",
     "yup": "^0.27.0"
   },
   "devDependencies": {

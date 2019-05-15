@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'url-search-params-polyfill';
 import 'font-awesome/css/font-awesome.min.css';
 import '@reach/tooltip/styles.css';
 import './index.css';

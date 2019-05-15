@@ -12,9 +12,19 @@ import config from './config';
 
 import resolvers from './resolvers';
 
+// TODO: remove this and add authentication
+async function getOrCreateUser() {
+  let user = await User.findOne();
+
+  if (!user) {
+    user = await User.create({ username: 'admin' });
+  }
+
+  return user._id;
+}
+
 async function main() {
-  // TODO: add authentication
-  const user = (await User.findOne())._id;
+  const user = await getOrCreateUser();
 
   const server = new ApolloServer({
     typeDefs: gql(

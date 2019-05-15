@@ -39,32 +39,35 @@ const CreateItem = ({ history }: Props) => {
     <div>
       <Mutation
         mutation={ITEM_MUTATION}
-        update={(
-          cache,
-          {
-            data: {
-              postLink: { item },
-            },
-          }
-        ) => {
-          let data;
-          try {
-            data = cache.readQuery({
-              query: FEED_QUERY,
-              variables: { query: '' },
-            });
-          } catch {} // feed wasn't fetched
+        refetchQueries={() => [{ query: FEED_QUERY, variables: { query: '' } }]}
+        awaitRefetchQueries // prevent flickering of UI when going back to Feed
+        // Update of the cache is causing an issue when newly created item is mutated (e.g. voted)
+        // update={(
+        //   cache,
+        //   {
+        //     data: {
+        //       postLink: { item },
+        //     },
+        //   }
+        // ) => {
+        //   let data;
+        //   try {
+        //     data = cache.readQuery({
+        //       query: FEED_QUERY,
+        //       variables: { query: '' },
+        //     });
+        //   } catch {} // feed wasn't fetched
 
-          if (!data) return;
+        //   if (!data) return;
 
-          data.feed.totalCount += 1;
-          data.feed.edges.unshift(item);
+        //   data.feed.totalCount += 1;
+        //   data.feed.edges.unshift(item);
 
-          cache.writeQuery({
-            query: FEED_QUERY,
-            data,
-          });
-        }}
+        //   cache.writeQuery({
+        //     query: FEED_QUERY,
+        //     data,
+        //   });
+        // }}
         onCompleted={() => history.push('/')}
       >
         {postLink => {
